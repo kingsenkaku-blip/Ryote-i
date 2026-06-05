@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(npx --version)",
+      "Bash(npm config *)",
+      "Bash(npm view *)",
+      "PowerShell(Get-Command nvm -ErrorAction SilentlyContinue; Get-Command volta -ErrorAction SilentlyContinue; Get-Command fnm -ErrorAction SilentlyContinue; \"node:\"; node --version; \"fnm dir:\"; Test-Path \"$env:LOCALAPPDATA\\\\fnm\")",
+      "PowerShell($env:PROCESSOR_ARCHITECTURE; [System.Environment]::Is64BitOperatingSystem)"
+    ]
+  }
+}

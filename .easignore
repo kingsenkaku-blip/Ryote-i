@@ -1,0 +1,12 @@
+# EAS Build にアップロードしないもの（ビルドに不要なファイル）
+node_modules/
+.expo/
+dist/
+web-build/
+
+# デザイン参考資料（アプリ本体には不要）
+design_handoff_ryote_i/
+
+# テスト・設定（ネイティブビルドには不要）
+**/__tests__/
+jest.config.js
