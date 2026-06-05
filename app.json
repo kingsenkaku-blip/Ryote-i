@@ -52,6 +52,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "86c9ff55-62ee-4914-bd5f-f0bc2ec26a7e"
+      }
+    },
+    "owner": "namuami"
   }
 }
