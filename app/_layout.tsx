@@ -9,6 +9,7 @@
 // GO_BACK を発火するため、expo-router 推奨の Redirect コンポーネント方式に変更。
 // ─────────────────────────────────────────────────────────────
 import React, { useEffect } from 'react';
+import { Platform } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Stack } from 'expo-router';
@@ -19,6 +20,7 @@ import { PreferencesProvider, usePreferences } from '@/store/PreferencesContext'
 import { ThemeProvider, useColors, useIsDark } from '@/store/ThemeContext';
 import { TripsProvider, useTrips } from '@/store/TripsContext';
 import { ensurePermissions, syncScheduledNotifications } from '@/services/notifications';
+import { InstallBanner } from '@/components/InstallBanner';
 
 // データ読み込みが終わるまでスプラッシュを保持。
 void SplashScreen.preventAutoHideAsync();
@@ -39,6 +41,16 @@ function RootNavigator() {
   // 通知許可のリクエスト（初回のみ）。
   useEffect(() => {
     void ensurePermissions();
+  }, []);
+
+  // Service Worker を登録（Web のみ）。
+  // HTTPS 環境または localhost でのみ動作します。
+  useEffect(() => {
+    if (Platform.OS !== 'web') return;
+    if (typeof navigator === 'undefined' || !('serviceWorker' in navigator)) return;
+    navigator.serviceWorker.register('/sw.js').catch(() => {
+      // 登録失敗は無視（開発時の HTTP 環境など）。
+    });
   }, []);
 
   // 旅程／設定が変わるたびに通知を再同期。
@@ -65,7 +77,10 @@ function RootNavigator() {
         <Stack.Screen name="add" />
         <Stack.Screen name="edit/[id]" />
         <Stack.Screen name="tutorial" options={{ animation: 'fade', gestureEnabled: false }} />
+        <Stack.Screen name="install" />
       </Stack>
+      {/* iOS PWA インストール誘導バナー（Web + iOS + 非スタンドアロンのみ表示） */}
+      <InstallBanner />
     </>
   );
 }

@@ -4,6 +4,7 @@
 // README / design_reference の makeTheme を移植。RN 用に box-shadow を
 // shadow プロパティへ置き換えるためのヘルパー shadow も用意しています。
 // ─────────────────────────────────────────────────────────────
+import { Platform } from 'react-native';
 import type { ViewStyle } from 'react-native';
 
 export interface Colors {
@@ -71,5 +72,12 @@ export function cardShadow(dark: boolean): ViewStyle {
   };
 }
 
-/** 等幅フォント（数字・メタ情報用）。iOS/Android の標準等幅を使用。 */
-export const MONO_FONT = 'Menlo';
+/**
+ * 等幅フォント（数字・メタ情報用）。
+ * Web では CSS スタック、iOS/Android では Menlo を使用します。
+ */
+export const MONO_FONT =
+  Platform.select({
+    web: 'ui-monospace, SFMono-Regular, Menlo, monospace',
+    default: 'Menlo',
+  }) ?? 'Menlo';
