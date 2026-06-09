@@ -32,10 +32,20 @@ export function DetailScreen({ tripId }: { tripId: string }) {
   // 宿泊を OFF→ON に戻したとき、前回の宿泊内容を復元するために保持。
   const [lastStay, setLastStay] = useState<Stay | null>(trip?.stay ?? null);
 
+  // スタックが空（チュートリアル→追加→詳細のように replace 連鎖した場合）でも
+  // ホームへ確実に戻れるようにするフォールバック付き戻るナビゲーション。
+  const goBack = () => {
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace('/');
+    }
+  };
+
   if (!trip) {
     return (
       <View style={{ flex: 1, backgroundColor: c.page }}>
-        <Header title="旅程" left={<RoundBtn icon="back" onPress={() => router.back()} />} />
+        <Header title="旅程" left={<RoundBtn icon="back" onPress={goBack} />} />
         <Text style={{ color: c.ink2, textAlign: 'center', marginTop: 40 }}>旅程が見つかりませんでした</Text>
       </View>
     );
@@ -68,7 +78,7 @@ export function DetailScreen({ tripId }: { tripId: string }) {
   const onArchive = () => {
     update({ archived: !trip.archived });
     Alert.alert(trip.archived ? 'アーカイブを解除しました' : 'アーカイブしました');
-    if (!trip.archived) router.back();
+    if (!trip.archived) goBack();
   };
 
   const onDelete = () => {
@@ -79,7 +89,7 @@ export function DetailScreen({ tripId }: { tripId: string }) {
         style: 'destructive',
         onPress: async () => {
           await deleteTrip(trip.id);
-          router.back();
+          goBack();
         },
       },
     ]);
@@ -90,7 +100,7 @@ export function DetailScreen({ tripId }: { tripId: string }) {
       <Header
         title={trip.place}
         sub={trip.scope === '国際' ? "INT'L" : 'DOMESTIC'}
-        left={<RoundBtn icon="back" onPress={() => router.back()} />}
+        left={<RoundBtn icon="back" onPress={goBack} />}
         right={<RoundBtn icon="edit" onPress={() => router.push(`/edit/${trip.id}`)} />}
       />
 
